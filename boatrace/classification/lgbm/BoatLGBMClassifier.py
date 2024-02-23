@@ -6,7 +6,7 @@ import sys
 from lightgbm.sklearn import LGBMClassifier
 from numpy import ndarray
 
-from boatrace.classification.lgbm.AbstractBoatClassifier import AbstractBoatClassifier
+from boatrace.classification.lgbm.AbstractLGBMBoatClassifier import AbstractLGBMBoatClassifier
 from boatrace.common.BoatConst import BoatConst
 from boatrace.server.ModelInfo import ModelInfo
 from boatrace.server.RemoteRequestParam import RemoteRequestParam
@@ -17,7 +17,7 @@ import pandas as pd
 #
 # Classifier of LGBM
 #
-class BoatLGBMClassifier(AbstractBoatClassifier):
+class BoatLGBMClassifier(AbstractLGBMBoatClassifier):
     def __init__(self, mi:ModelInfo) -> None:
         self._mi_:ModelInfo = mi
         self._prop_:PropertyUtil = PropertyUtil.getInstance()
