@@ -47,7 +47,7 @@ class JsonRequestDispatcher(AbstractRequestDispatcher):
         # ex) cf_lgbm-1_py
         algorithm_id:str = json['algorithmId'] 
         #classification or regression
-        if (algorithm_id.startswith('cf_')) or (algorithm_id.startswith('rg_')):
+        if (algorithm_id.startswith('cf_')) or (algorithm_id.startswith('rg_') or (algorithm_id.startswith('rk_'))):
             req:RemoteRequest
             try: 
                 req = JsonUtil.decodeGenericObject(jsonStr)

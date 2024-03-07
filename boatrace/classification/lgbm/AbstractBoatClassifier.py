@@ -1,5 +1,5 @@
 from boatrace.server.RemoteRequestParam import RemoteRequestParam
-class AbstractLGBMBoatClassifier():
+class AbstractBoatClassifier():
     """
     classifier or regressorの共通interface
     """

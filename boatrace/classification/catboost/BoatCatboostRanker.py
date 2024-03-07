@@ -1,9 +1,8 @@
 from logging import getLogger, Logger
 from multiprocessing.dummy import list
 import pickle
-import sys
 
-from lightgbm.sklearn import LGBMClassifier
+from catboost import CatBoostRanker, Pool
 from numpy import ndarray
 
 from boatrace.classification.lgbm.AbstractBoatClassifier import AbstractBoatClassifier
@@ -12,17 +11,18 @@ from boatrace.server.ModelInfo import ModelInfo
 from boatrace.server.RemoteRequestParam import RemoteRequestParam
 from boatrace.util.PropertyUtil import PropertyUtil
 import pandas as pd
+from boatrace.common.BoatEnum import DelimiterType
 
 
 #
 # Classifier of LGBM
 #
-class BoatLGBMClassifier(AbstractBoatClassifier):
+class BoatCatboostRanker(AbstractBoatClassifier):
     def __init__(self, mi:ModelInfo) -> None:
         self._mi_:ModelInfo = mi
         self._prop_:PropertyUtil = PropertyUtil.getInstance()
         self._dtype_:dict
-        self._model_:LGBMClassifier
+        self._model_:CatBoostRanker
         self._isInitialized_:bool = False
         self._logger_:Logger = getLogger('server')
     
@@ -46,10 +46,16 @@ class BoatLGBMClassifier(AbstractBoatClassifier):
             self._initialize_(param)
             self._isInitialized_ = True
     
-        df = pd.DataFrame([param.values], columns=self._mi_.feature_ids).astype(dtype=self._dtype_)
+        #arr2 =  [ [entry1, jyo, raceno...] ... [entry6, jyo, raceno...] ] 
+        arr2d= [];
+        for entry in param.values:
+            arr2d.append(entry.split(DelimiterType.DELIM_COMMA.value))
+            
+        df = pd.DataFrame(arr2d, columns=self._mi_.feature_ids).astype(dtype=self._dtype_)
         
-        arr:ndarray = self._model_.predict_proba(df)
-        return arr[0].tolist()
+        arr:ndarray = self._model_.predict(df)
+        
+        return arr.tolist();
 
     def _createModelFilepath(self, param:RemoteRequestParam) -> str:
         """

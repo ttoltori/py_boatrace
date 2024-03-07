@@ -12,7 +12,7 @@ from boatrace.util.Singleton import Singleton
 from boatrace.server.service.AbstractService import AbstractService
 
 
-class ClassificationLGBMService(AbstractService, Singleton):
+class ClassificationService(AbstractService, Singleton):
     """
     lightGBMのclassification, regressionを提供するクラス
     """

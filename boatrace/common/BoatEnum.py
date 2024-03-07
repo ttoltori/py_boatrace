@@ -7,7 +7,8 @@ class DelimiterType(Enum):
 
 class ServiceType(Enum):
     CF_LGBM_PY = 'cf_lgbm_py' # Classification of  LightGBM
-    RG_LGBM_PY = 'rg_lgbm_py' # Regression of LightGBM 
+    RG_LGBM_PY = 'rg_lgbm_py' # Regression of LightGBM
+    RK_CATB_PY = 'rk_catb_py' # CatBoostRanker 
 
 class ServiceStatus(Enum):
     OK = "OK" # OK
