@@ -2,7 +2,8 @@ from boatrace.server.ModelInfo import ModelInfo
 from boatrace.util.Properties import Properties
 from boatrace.util.Singleton import Singleton
 from multiprocessing.dummy import list
-from jsonschema._validators import properties
+#from jsonschema._validators import propertiess
+
 #
 # java properties access用singleton class
 #
@@ -27,7 +28,7 @@ class PropertyUtil(Singleton):
         return mi
     
     def reload(self):
-        prop:properties = Properties()
+        prop:Properties = Properties()
         for filepath in self._flieList_:
             prop.load(filepath, '=', '#')
     

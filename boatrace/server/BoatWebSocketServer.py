@@ -64,8 +64,8 @@ def logSetup():
     config.dictConfig(log_config)
 
 def main(argv):
-    #propfile_expr10:str = 'C:/Dev/workspace/Oxygen/pod_boatrace/properties/expr10/expr10.properties'
-    #propfile_model:str = 'C:/Dev/workspace/Oxygen/pod_boatrace/properties/expr10/model.properties'
+#    propfile_expr10:str = 'C:/Dev/github/pod_boatrace/properties/expr10/expr10.properties'
+#    propfile_model:str = 'C:/Dev/github/pod_boatrace/properties/expr10/model.properties'
 
     propfile_expr10:str = argv[1]
     propfile_model:str = argv[2]
