@@ -10,6 +10,8 @@ from boatrace.util.PropertyUtil import PropertyUtil
 import pandas as pd
 import math
 from sklearn.metrics._ranking import ndcg_score
+from sklearn.utils.class_weight import compute_class_weight
+import numpy as np
 
 
 #
@@ -86,8 +88,14 @@ class BoatCatboostRankerTest:
 
         # 모델 생성
         #model = cab.CatBoostRanker(**model_param_dict)
+
+        class_weights = compute_class_weight(class_weight="balanced", classes=np.unique(y_train), y=y_train)
+        class_weights = dict(zip(np.unique(y_train), class_weights))
             
-        param = {'loss_function':'YetiRank', 'learning_rate'  : 0.03, 'iterations': 200, 'depth': 4, 'use_best_model':False}   
+        param = {'loss_function':'YetiRank', 'learning_rate'  : 0.03, 'iterations': 200, 'depth': 4, 'use_best_model':False}
+        #param['class_weights'] = class_weights
+        param["auto_class_weights"] = "Balanced"
+           
         #param = {'iterations': 100}   
         # 모델 생성
         model = CatBoostRanker(**param)
