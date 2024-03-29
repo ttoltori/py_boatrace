@@ -17,6 +17,7 @@ class ServiceFactory():
     def create(self, service_type:ServiceType) -> object:
         if ((service_type == ServiceType.CF_LGBM_PY) or  
                 (service_type == ServiceType.RG_LGBM_PY) or 
+                (service_type == ServiceType.RK_LGBM_PY) or 
                 (service_type == ServiceType.RK_CATB_PY) ): 
             # LGBM classification, regression
             return ClassificationService.getInstance()

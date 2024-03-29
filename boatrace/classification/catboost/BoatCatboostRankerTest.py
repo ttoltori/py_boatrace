@@ -92,9 +92,8 @@ class BoatCatboostRankerTest:
         class_weights = compute_class_weight(class_weight="balanced", classes=np.unique(y_train), y=y_train)
         class_weights = dict(zip(np.unique(y_train), class_weights))
             
-        param = {'loss_function':'YetiRank', 'learning_rate'  : 0.03, 'iterations': 200, 'depth': 4, 'use_best_model':False}
-        #param['class_weights'] = class_weights
-        param["auto_class_weights"] = "Balanced"
+        param = {'loss_function':'YetiRank', 'learning_rate'  : 0.01, 'iterations': 200, 'depth': 4, 'use_best_model':False}
+        #param['class_weight'] = class_weights
            
         #param = {'iterations': 100}   
         # 모델 생성
@@ -114,8 +113,13 @@ class BoatCatboostRankerTest:
         print(ndcg_score([y_expected], [y_predicted]))
         print(feature_importances)
         
+        probabilities = 1 - (1 / (1 + np.exp(-y_predicted)))
         #print(X_test)
-        print(y_predicted)
+        for i in range(24) :
+            print (i+1, round(y_predicted[i], 3), round(probabilities[i], 3))
+        
+        #print(X_test)
+        #print(y_predicted)
         
 def logSetup():
     """

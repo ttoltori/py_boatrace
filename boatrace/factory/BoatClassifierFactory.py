@@ -1,6 +1,7 @@
 from boatrace.server.ModelInfo import ModelInfo
 from boatrace.classification.lgbm.AbstractBoatClassifier import AbstractBoatClassifier
 from boatrace.classification.lgbm.BoatLGBMClassifier import BoatLGBMClassifier
+from boatrace.classification.lgbm.BoatLGBMRanker import BoatLGBMRanker
 from boatrace.classification.lgbm.BoatLGBMRegressor import BoatLGBMRegressor
 from boatrace.classification.catboost.BoatCatboostRanker import BoatCatboostRanker
 
@@ -24,4 +25,6 @@ class BoatClassifierFactory(AbstractBoatClassifierFactory):
             return BoatLGBMRegressor(mi) #LGBMRegressor
         elif mi.algorithm_id.startswith('rk_catb'):
             return BoatCatboostRanker(mi) #CatBoostRanker
+        elif mi.algorithm_id.startswith('rk_lgbm'):
+            return BoatLGBMRanker(mi) #CatBoostRanker
 

@@ -2,7 +2,8 @@ from logging import getLogger, Logger
 from multiprocessing.dummy import list
 import pickle
 
-from catboost import CatBoostRanker, Pool
+from catboost import CatBoostRanker
+import numpy as np
 from numpy import ndarray
 
 from boatrace.classification.lgbm.AbstractBoatClassifier import AbstractBoatClassifier
@@ -54,9 +55,10 @@ class BoatCatboostRanker(AbstractBoatClassifier):
         df = pd.DataFrame(arr2d, columns=self._mi_.feature_ids).astype(dtype=self._dtype_)
         
         arr:ndarray = self._model_.predict(df)
+        probabilities = 1 - (1 / (1 + np.exp(-arr)))
         
-        return arr.tolist();
-
+        return probabilities.tolist();
+    
     def _createModelFilepath(self, param:RemoteRequestParam) -> str:
         """
         モデルの実体へのfullpathを取得する

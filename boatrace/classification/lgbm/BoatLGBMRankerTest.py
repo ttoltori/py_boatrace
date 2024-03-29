@@ -110,8 +110,9 @@ class BoatLGBMRankerTest:
         importances = np.array(model.feature_importances_)
         
         df = pd.DataFrame({'feature':feature, 'importance':importances})
-        df = df.sort_values('importance', ascending=True)
-        print(df); 
+        df = df.sort_values('importance', ascending=False)
+        for row in df.iterrows():
+            print(row);
 
         y_expected  = y_test
         y_predicted = model.predict(X_test)
@@ -120,8 +121,10 @@ class BoatLGBMRankerTest:
         #print(model.get_evals_result())
         print(ndcg_score([y_expected], [y_predicted]))
         
+        probabilities = 1 - (1 / (1 + np.exp(-y_predicted)))
         #print(X_test)
-        print(y_predicted)
+        for i in range(24) :
+            print (i+1, round(y_predicted[i], 3), round(probabilities[i], 3))
         
 def logSetup():
     """
