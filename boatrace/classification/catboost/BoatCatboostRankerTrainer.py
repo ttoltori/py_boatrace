@@ -61,8 +61,9 @@ class BoatCatboostRankerTrainer:
         #
         # # 모델 생성
         # model = cab.CatBoostRanker(**model_param_dict)
-            
-        param = {'loss_function':'YetiRank', 'learning_rate': 0.1, 'iterations': 100, 'depth': 7, 'use_best_model':False}   
+           
+        param = {'iterations': 100}
+        #param = {'loss_function':'YetiRank', 'learning_rate': 0.1, 'iterations': 100, 'depth': 7, 'use_best_model':False}   
         #param = {'loss_function':'YetiRank', 'learning_rate': 0.03, 'depth': 7}   
         #param = {'loss_function':'YetiRank'}   
         # 모델 생성

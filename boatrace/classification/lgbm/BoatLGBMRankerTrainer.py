@@ -2,12 +2,11 @@ from _datetime import datetime
 import json
 from logging import getLogger, config
 import sys
+import pickle
 
 from boatrace.common.BoatEnum import DelimiterType
 from boatrace.util.PropertyUtil import PropertyUtil
 import pandas as pd
-import math
-from sklearn.metrics._ranking import ndcg_score
 from sklearn.utils.class_weight import compute_class_weight
 import numpy as np
 
@@ -16,7 +15,7 @@ import lightgbm as lgb
 #
 # model生成するクラス
 #
-class BoatLGBMRankerTest:
+class BoatLGBMRankerTrainer:
     def __init__(self):
         self._logger = getLogger('server')
         
@@ -46,35 +45,10 @@ class BoatLGBMRankerTest:
         # csv data 取得
         df = pd.read_csv(csv_filepath, names=feature_name_list, dtype=data_type_dict, engine='python')
         df = df.sort_values([ 'raceid', 'waku'])
+
+        X = df[feature_name_list[0:feature_num-1]]
+        y = df[feature_name_list[feature_num-1]]
         
-        keys = df['raceid'].unique()
-        date_split_val =  keys[math.trunc( len(keys) * 0.6)]
-        date_split_test =  keys[math.trunc( len(keys) * 0.8)]
-        
-        # date_split_val = 202006020000
-        # date_split_test = 202106012400
-        
-        #test_size = 0.2
-                
-        df_train = df[df['raceid'] <= date_split_val]
-        #df_val = df[ (df['raceid'] > date_split_val)]
-        df_val = df[ (df['raceid'] > date_split_val) & (df['raceid'] < date_split_test) ]
-        df_test = df[df['raceid'] >= date_split_test]
-        print( "df_train length="  + str(len(df_train)))
-        print( "df_val length="  + str(len(df_val)))
-        print( "df_val length="  + str(len(df_test)))
-        
-        X_train = df_train.drop(['class'], axis=1)
-        X_val = df_val.drop(['class'], axis=1)
-        X_test = df_test.drop(['class'], axis=1)
-        
-        y_train = df_train['class']
-        y_val = df_val['class']
-        y_test = df_test['class']
-        
-        #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
-        
-    
         #モデル파라미터 설정
         #model_param_list = param_list_str.split(DelimiterType.DELIM_COMMA.value)
         #model_param_dict = {}
@@ -85,46 +59,24 @@ class BoatLGBMRankerTest:
         # 모델 생성
         #model = cab.CatBoostRanker(**model_param_dict)
 
-        class_weights = compute_class_weight(class_weight="balanced", classes=np.unique(y_train), y=y_train)
-        class_weights = dict(zip(np.unique(y_train), class_weights))
-        print(class_weights)
-            
-        param = {'learning_rate'  : 0.05}
+        class_weights = compute_class_weight(class_weight="balanced", classes=np.unique(y), y=y)
+        class_weights = dict(zip(np.unique(y), class_weights))
+           
+        param = {}
+        #param = {'learning_rate'  : 0.01}
         #param['class_weight'] = class_weights
 
         #param = {'iterations': 100}   
         # 모델 생성
         model = lgb.LGBMRanker(**param)
         
-        train_group = X_train['raceid'].value_counts()
+        train_group = X['raceid'].value_counts()
         train_group = train_group.sort_index()
         
-        eval_group = X_val['raceid'].value_counts()
-        eval_group = eval_group.sort_index()
-        
         # model.fit(X_train, y_train)
-        model.fit(X_train, y_train, group=train_group,  eval_set=[(X_val, y_val)],  eval_group=[list(eval_group)])
-        print(model.get_params())
-
-        feature = list(df.drop(columns=['class']).columns)
-        importances = np.array(model.feature_importances_)
+        model.fit(X, y, group=train_group)
         
-        df = pd.DataFrame({'feature':feature, 'importance':importances})
-        df = df.sort_values('importance', ascending=False)
-        for row in df.iterrows():
-            print(row);
-
-        y_expected  = y_test
-        y_predicted = model.predict(X_test)
-        
-        #print(model.get_test_eval())
-        #print(model.get_evals_result())
-        print(ndcg_score([y_expected], [y_predicted]))
-        
-        probabilities = 1 - (1 / (1 + np.exp(-y_predicted)))
-        #print(X_test)
-        for i in range(24) :
-            print (i+1, round(y_predicted[i], 3), round(probabilities[i], 3))
+        pickle.dump(model, open(model_filepath, 'wb'))
         
 def logSetup():
     """
@@ -155,7 +107,7 @@ def main(argv):
     # loggin set up
     logSetup()
 
-    tester = BoatLGBMRankerTest()
+    tester = BoatLGBMRankerTrainer()
     tester.execute(argv[1], argv[2], argv[3], argv[4], argv[5])
     
     return 0
