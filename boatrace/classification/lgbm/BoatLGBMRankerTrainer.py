@@ -62,8 +62,8 @@ class BoatLGBMRankerTrainer:
         class_weights = compute_class_weight(class_weight="balanced", classes=np.unique(y), y=y)
         class_weights = dict(zip(np.unique(y), class_weights))
            
-        param = {}
-        #param = {'learning_rate'  : 0.01}
+        #param = {}
+        param = {'learning_rate'  : 0.05}
         #param['class_weight'] = class_weights
 
         #param = {'iterations': 100}   
