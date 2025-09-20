@@ -55,7 +55,9 @@ class BoatLGBMRanker(AbstractBoatClassifier):
         df = pd.DataFrame(arr2d, columns=self._mi_.feature_ids).astype(dtype=self._dtype_)
         
         arr:ndarray = self._model_.predict(df)
-        probabilities = 1 - (1 / (1 + np.exp(-arr)))
+        probabilities = self._ranking_scores_to_probabilities(-arr);
+        #probabilities = 1 - (1 / (1 + np.exp(-arr)))
+        
         
         return probabilities.tolist();
 
@@ -65,4 +67,19 @@ class BoatLGBMRanker(AbstractBoatClassifier):
         """
         return self._prop_.getProperty('dir_model_release') + \
             '/'.join([param.modelNo.zfill(BoatConst.LENGTH_MODEL_NO), param.rankNo, param.pattern, param.modelFileName])
+
+    def _ranking_scores_to_probabilities(self, scores) -> list[float]:
+        """
+        ランキングスコアを確率に変換する関数
+    
+        :param scores: ランキングスコアのリスト
+        :return: 確率に変換されたスコアのリスト
+        """
+        # スコアを指数関数で変換
+        exp_scores = np.exp(scores)
+        
+        # 正規化して確率に変換
+        probabilities = exp_scores / np.sum(exp_scores)
+        
+        return probabilities
     

@@ -89,8 +89,8 @@ class BoatLGBMRankerTest:
         class_weights = dict(zip(np.unique(y_train), class_weights))
         print(class_weights)
             
-        param = {'learning_rate'  : 0.05}
-        #param['class_weight'] = class_weights
+        param = {'learning_rate'  : 0.01}
+        param['class_weight'] = class_weights
 
         #param = {'iterations': 100}   
         # 모델 생성
@@ -121,10 +121,25 @@ class BoatLGBMRankerTest:
         #print(model.get_evals_result())
         print(ndcg_score([y_expected], [y_predicted]))
         
-        probabilities = 1 - (1 / (1 + np.exp(-y_predicted)))
+        probabilities = self._ranking_scores_to_probabilities(y_predicted)
         #print(X_test)
         for i in range(24) :
             print (i+1, round(y_predicted[i], 3), round(probabilities[i], 3))
+
+    def _ranking_scores_to_probabilities(self, scores) -> list[float]:
+        """
+        ランキングスコアを確率に変換する関数
+    
+        :param scores: ランキングスコアのリスト
+        :return: 確率に変換されたスコアのリスト
+        """
+        # スコアを指数関数で変換
+        exp_scores = np.exp(scores)
+        
+        # 正規化して確率に変換
+        probabilities = exp_scores / np.sum(exp_scores)
+        
+        return probabilities
         
 def logSetup():
     """

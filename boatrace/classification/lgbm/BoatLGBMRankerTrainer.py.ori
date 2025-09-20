@@ -2,23 +2,20 @@ from _datetime import datetime
 import json
 from logging import getLogger, config
 import sys
-
-from sklearn.metrics import classification_report
-from sklearn.model_selection._split import train_test_split
+import pickle
 
 from boatrace.common.BoatEnum import DelimiterType
 from boatrace.util.PropertyUtil import PropertyUtil
-import lightgbm as lgb
 import pandas as pd
-
 from sklearn.utils.class_weight import compute_class_weight
 import numpy as np
 
+import lightgbm as lgb
 
 #
 # model生成するクラス
 #
-class BoatLGBMClassifierTest:
+class BoatLGBMRankerTrainer:
     def __init__(self):
         self._logger = getLogger('server')
         
@@ -39,65 +36,49 @@ class BoatLGBMClassifierTest:
         #data_type = {'nw1': 'float', 'nw2': 'float', 'nw3': 'float', 'nw4': 'float', 'nw5': 'float', 'nw6': 'float', 'class': 'category'}
         feature_num = len(feature_name_list)
         data_type_dict = {}
+        cat_features = []
         for i in range(feature_num):
             data_type_dict[feature_name_list[i]] = feature_type_list[i]
+            if feature_type_list[i] == 'category'  and feature_name_list[i] != 'class':
+                cat_features.append(feature_name_list[i])
         
         # csv data 取得
         df = pd.read_csv(csv_filepath, names=feature_name_list, dtype=data_type_dict, engine='python')
-        
-        # train data 取得
+        df = df.sort_values([ 'raceid', 'waku'])
+
         X = df[feature_name_list[0:feature_num-1]]
         y = df[feature_name_list[feature_num-1]]
         
-        
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
-        
-        class_weights = compute_class_weight(class_weight="balanced", classes=np.unique(y_train), y=y_train)
-        class_weights = dict(zip(np.unique(y_train), class_weights))
-        print(np.unique(y_train))
-        print(class_weights)
         #モデル파라미터 설정
-        
-        model_param_list = param_list_str.split(DelimiterType.DELIM_COMMA.value)
-        model_param_dict = {}
-        for param in model_param_list:
-            key, value = param.split(DelimiterType.DELIM_EQUAL.value)
-            model_param_dict[key] = value
-        model_param_dict['class_weight'] = class_weights
-        
+        #model_param_list = param_list_str.split(DelimiterType.DELIM_COMMA.value)
+        #model_param_dict = {}
+        #for param in model_param_list:
+        #  key, value = param.split(DelimiterType.DELIM_EQUAL.value)
+        #    model_param_dict[key] = value
+
         # 모델 생성
-        model = lgb.LGBMClassifier(**model_param_dict)
+        #model = cab.CatBoostRanker(**model_param_dict)
 
-        # モデル学習
-        evals_result = {}
+        #param = {}
+        #param = {'boosting_type':'dart', 'max_depth':10, 'num_leaves':128, 'learning_rate':0.01, 'reg_alpha':0.05}
+        param = {'device_type' : 'gpu',  'learning_rate'  : 0.01}
+        #param = { 'learning_rate'  : 0.01}
+        
+        class_weights = compute_class_weight(class_weight="balanced", classes=np.unique(y), y=y)
+        class_weights = dict(zip(np.unique(y), class_weights))
+        param['class_weight'] = class_weights
+
+        #param = {'iterations': 100}   
+        # 모델 생성
+        model = lgb.LGBMRanker(**param)
+        
+        train_group = X['raceid'].value_counts()
+        train_group = train_group.sort_index()
+        
         # model.fit(X_train, y_train)
-        model.fit(X_train, y_train, eval_set=[(X_train, y_train), (X_test, y_test)], eval_metric='logloss',
-                  callbacks=[lgb.callback.record_evaluation(evals_result)],)
-
-        # Print the training and validation loss at each boosting round
-        #for i, (train_loss, val_loss) in enumerate(zip(evals_result['training']['multi_logloss'], evals_result['valid_1']['multi_logloss'])):
-        for i, (train_loss, val_loss) in enumerate(zip(evals_result['training']['binary_logloss'], evals_result['valid_1']['binary_logloss'])):
-            if i == 0 or i == 49 or i == 99: 
-                print(f"Boosting round {i}: training loss = {train_loss:.4f}, validation loss = {val_loss:.4f}")        
+        model.fit(X, y, group=train_group)
         
-        y_expected  = y_test
-        y_predicted = model.predict(X_test)
-
-        # importance 出力        
-        importance = pd.DataFrame(model.feature_importances_, index=model.feature_name_, columns=['importance'])
-        pd.set_option("display.max_rows", None, "display.max_columns", None)
-        print(importance)
-
-        # Check for Overfitting
-        print('Training set score: {:.4f}'.format(model.score(X_train, y_train)))
-        print('Test set score: {:.4f}'.format(model.score(X_test, y_test)))
-        
-        # Classification Metrices
-        print(classification_report(y_expected, y_predicted))
-        
-        # モデル保存
-        # pickle.dump(model, open(model_filepath, 'wb'))
-        # self._logger.info('model created:' + model_filepath)
+        pickle.dump(model, open(model_filepath, 'wb'))
         
 def logSetup():
     """
@@ -128,7 +109,7 @@ def main(argv):
     # loggin set up
     logSetup()
 
-    tester = BoatLGBMClassifierTest()
+    tester = BoatLGBMRankerTrainer()
     tester.execute(argv[1], argv[2], argv[3], argv[4], argv[5])
     
     return 0

@@ -9,6 +9,7 @@ import lightgbm as lgb
 import pandas as pd
 from boatrace.common.BoatEnum import DelimiterType
 from sklearn.utils.class_weight import compute_class_weight
+from imblearn.over_sampling import SMOTE
 import numpy as np
 
 #
@@ -42,11 +43,14 @@ class BoatLGBMClassifierTrainer:
         df = pd.read_csv(csv_filepath, names=feature_name_list, dtype=data_type_dict, engine='python')
         
         # train data 取得
-        x = df[feature_name_list[0:feature_num-1]]
+        X = df[feature_name_list[0:feature_num-1]]
         y = df[feature_name_list[feature_num-1]]
         
-        class_weights = compute_class_weight(class_weight="balanced", classes=np.unique(y), y=y)
-        class_weights = dict(zip(np.unique(y), class_weights))
+        # class_weights = compute_class_weight(class_weight="balanced", classes=np.unique(y), y=y)
+        # class_weights = dict(zip(np.unique(y), class_weights))
+        # SMOTE 적용- 클래스불균형대책
+        smote = SMOTE(random_state=42)
+        X_resampled, y_resampled = smote.fit_resample(X, y)
 
         #モデル파라미터 설정
         model_param_list = param_list_str.split(DelimiterType.DELIM_COMMA.value)
@@ -54,13 +58,13 @@ class BoatLGBMClassifierTrainer:
         for param in model_param_list:
             key, value = param.split(DelimiterType.DELIM_EQUAL.value)
             model_param_dict[key] = value
-        model_param_dict['class_weight'] = class_weights
+        # model_param_dict['class_weight'] = class_weights
             
         # 모델 생성
         model = lgb.LGBMClassifier(**model_param_dict)
 
         # モデル学習
-        model.fit(x, y)
+        model.fit(X_resampled, y_resampled)
         
         # モデル保存
         pickle.dump(model, open(model_filepath, 'wb'))

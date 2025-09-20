@@ -8,8 +8,8 @@ from boatrace.common.BoatEnum import DelimiterType
 from boatrace.util.PropertyUtil import PropertyUtil
 import pandas as pd
 from sklearn.utils.class_weight import compute_class_weight
+from imblearn.over_sampling import SMOTE
 import numpy as np
-
 import lightgbm as lgb
 
 #
@@ -59,22 +59,31 @@ class BoatLGBMRankerTrainer:
         # 모델 생성
         #model = cab.CatBoostRanker(**model_param_dict)
 
+        #param = {}
+        #param = {'boosting_type':'dart', 'max_depth':10, 'num_leaves':128, 'learning_rate':0.01, 'reg_alpha':0.05}
+        param = {'device_type' : 'gpu',  'learning_rate'  : 0.01}
+        #param = { 'learning_rate'  : 0.01}
+        
+        #가중치 설정 - 클래스불균형대책
         class_weights = compute_class_weight(class_weight="balanced", classes=np.unique(y), y=y)
         class_weights = dict(zip(np.unique(y), class_weights))
-           
-        #param = {}
-        param = {'learning_rate'  : 0.05}
-        #param['class_weight'] = class_weights
+        param['class_weight'] = class_weights
+
+        # SMOTE 적용- 클래스불균형대책
+        # smote = SMOTE(random_state=42)
+        # X_resampled, y_resampled = smote.fit_resample(X, y)
 
         #param = {'iterations': 100}   
         # 모델 생성
         model = lgb.LGBMRanker(**param)
         
         train_group = X['raceid'].value_counts()
+        # train_group = X_resampled['raceid'].value_counts()
         train_group = train_group.sort_index()
         
         # model.fit(X_train, y_train)
         model.fit(X, y, group=train_group)
+        # model.fit(X_resampled, y_resampled, group=train_group)
         
         pickle.dump(model, open(model_filepath, 'wb'))
         

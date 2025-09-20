@@ -1,4 +1,4 @@
-from _datetime import datetime
+from datetime import datetime
 import json
 from logging import getLogger, config
 import sys
@@ -25,7 +25,6 @@ class BoatLGBMClassifierTest:
     # @param feature_name_list_str ex)  nw1,nw2,nw3,nw4,nw5,nw6,class
     # @param feature_type_list_str ex)  float,float,float,float,float,float,category
     def execute(self, param_list_str, csv_filepath, model_filepath, feature_name_list_str, feature_type_list_str):
-        
         #feature명 리스트 취득
         feature_name_list = feature_name_list_str.split(DelimiterType.DELIM_COMMA.value)
         
@@ -60,17 +59,21 @@ class BoatLGBMClassifierTest:
 
         # モデル学習
         evals_result = {}
-        # model.fit(X_train, y_train)
+        #model.fit(X_train, y_train)
         model.fit(X_train, y_train, eval_set=[(X_train, y_train), (X_test, y_test)], eval_metric='logloss',
-                  callbacks=[lgb.callback.record_evaluation(evals_result)],)
+                  callbacks=[lgb.callback.early_stopping(10), lgb.callback.record_evaluation(evals_result)],)
 
         # Print the training and validation loss at each boosting round
+        #for i, (train_loss, val_loss) in enumerate(zip(evals_result['training']['multi_logloss'], evals_result['valid_1']['multi_logloss'])):
         for i, (train_loss, val_loss) in enumerate(zip(evals_result['training']['multi_logloss'], evals_result['valid_1']['multi_logloss'])):
-        #for i, (train_loss, val_loss) in enumerate(zip(evals_result['training']['binary_logloss'], evals_result['valid_1']['binary_logloss'])):
-            if i == 0 or i == 49 or i == 99: 
-                print(f"Boosting round {i}: training loss = {train_loss:.4f}, validation loss = {val_loss:.4f}")        
+            if (i+1) % 50 == 0 or i == 0 or i == len(evals_result['training']['multi_logloss']) -1:
+                print(f"Boosting round {i+1}: training loss = {train_loss:.4f}, validation loss = {val_loss:.4f}")        
         
         y_expected  = y_test
+        y_predicted_proba = model.predict_proba(X_test)
+        print('--- Predicted Probabilities ---')
+        print(y_predicted_proba)
+
         y_predicted = model.predict(X_test)
 
         # importance 出力        
