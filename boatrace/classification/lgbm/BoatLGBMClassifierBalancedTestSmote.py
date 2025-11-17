@@ -13,6 +13,7 @@ import pandas as pd
 
 from sklearn.utils.class_weight import compute_class_weight
 import numpy as np
+from imblearn.over_sampling import SMOTE
 
 
 #
@@ -52,10 +53,21 @@ class BoatLGBMClassifierTest:
         
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
         
-        class_weights = compute_class_weight(class_weight="balanced", classes=np.unique(y_train), y=y_train)
-        class_weights = dict(zip(np.unique(y_train), class_weights))
-        print(np.unique(y_train))
-        print(class_weights)
+        # SMOTE requires numerical features only - encode categorical features
+        # Identify categorical columns
+        categorical_cols = X_train.select_dtypes(include=['category', 'object']).columns
+        
+        # Convert categorical to numeric using label encoding (simpler than one-hot for SMOTE)
+        X_train_encoded = X_train.copy()
+        X_test_encoded = X_test.copy()
+        
+        for col in categorical_cols:
+            X_train_encoded[col] = X_train[col].astype('category').cat.codes
+            X_test_encoded[col] = X_test[col].astype('category').cat.codes
+        
+        # Apply SMOTE on encoded data
+        smote = SMOTE(random_state=42)
+        X_resampled, y_resampled = smote.fit_resample(X_train_encoded, y_train)
         #モデル파라미터 설정
         
         model_param_list = param_list_str.split(DelimiterType.DELIM_COMMA.value)
@@ -70,7 +82,7 @@ class BoatLGBMClassifierTest:
                     model_param_dict[key] = int(value)
             except ValueError:
                 model_param_dict[key] = value
-        model_param_dict['class_weight'] = class_weights
+        #model_param_dict['class_weight'] = class_weights
         
         # Debug: print parsed parameters
         print("Model parameters:", model_param_dict)
@@ -81,7 +93,7 @@ class BoatLGBMClassifierTest:
         # モデル学習
         evals_result = {}
         # model.fit(X_train, y_train)
-        model.fit(X_train, y_train, eval_set=[(X_train, y_train), (X_test, y_test)], eval_metric='logloss',
+        model.fit(X_resampled, y_resampled, eval_set=[(X_resampled, y_resampled), (X_test_encoded, y_test)], eval_metric='logloss',
                   callbacks=[lgb.callback.record_evaluation(evals_result)],)
 
         # Print the training and validation loss at each boosting round
@@ -92,7 +104,7 @@ class BoatLGBMClassifierTest:
                 print(f"Boosting round {i}: training loss = {train_loss:.4f}, validation loss = {val_loss:.4f}")        
         
         y_expected  = y_test
-        y_predicted = model.predict(X_test)
+        y_predicted = model.predict(X_test_encoded)
 
         # importance 出力        
         importance = pd.DataFrame(model.feature_importances_, index=model.feature_name_, columns=['importance'])
@@ -100,8 +112,8 @@ class BoatLGBMClassifierTest:
         print(importance)
 
         # Check for Overfitting
-        print('Training set score: {:.4f}'.format(model.score(X_train, y_train)))
-        print('Test set score: {:.4f}'.format(model.score(X_test, y_test)))
+        print('Training set score: {:.4f}'.format(model.score(X_resampled, y_resampled)))
+        print('Test set score: {:.4f}'.format(model.score(X_test_encoded, y_test)))
         
         # Classification Metrices
         print(classification_report(y_expected, y_predicted))

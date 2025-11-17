@@ -1,0 +1,376 @@
+PS C:\Dev\github\py_boatrace>  c:; cd 'c:\Dev\github\py_boatrace'; & 'c:\Dev\anaconda3\python.exe' 'c:\Users\ttolt\.windsurf\extensions\ms-python.debugpy-2025.14.1-win32-x64\bundled\libs\debugpy\launcher' '55608' '--' 'C:\Dev\github\py_boatrace/boatrace/classification/lgbm/BoatLGBMClassifierTest.py' 'boosting_type=gbdt,learning_rate=0.1,device_type=gpu,max_bin=255,max_cat_threshold=63' 'C:/Dev/experiment/expr10/arff/39104_rank1.csv' 'model_filepath' 'mm,jyo,race,turn,grade,raty,femcnt,alvt,time,fixent,en1,en2,en3,en4,en5,en6,nw1,nw2,nw3,nw4,nw5,nw6,n2w1,n2w2,n2w3,n2w4,n2w5,n2w6,n3w1,n3w2,n3w3,n3w4,n3w5,n3w6,lw1,lw2,lw3,lw4,lw5,lw6,l2w1,l2w2,l2w3,l2w4,l2w5,l2w6,l3w1,l3w2,l3w3,l3w4,l3w5,l3w6,m2w1,m2w2,m2w3,m2w4,m2w5,m2w6,sex1,sex2,sex3,sex4,sex5,sex6,lv1,lv2,lv3,lv4,lv5,lv6,age1,age2,age3,age4,age5,age6,weit1,weit2,weit3,weit4,weit5,weit6,fly1,f,category,category,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,category,category,category,category,category,category,category,category,category,category,category,category,int,int,int,int,int,int,float,float,float,float,float,float,int,int,int,int,int,int,int,int,int,int,int,int,float,float,float,float,float,float,category' 
+Model parameters: {'boosting_type': 'gbdt', 'learning_rate': 0.1, 'device_type': 'gpu', 'max_bin': 255, 'max_cat_threshold': 63}
+[LightGBM] [Info] This is the GPU trainer!!
+[LightGBM] [Info] Total Bins 13981
+[LightGBM] [Info] Number of data points in the train set: 216036, number of used features: 100
+[LightGBM] [Info] Using GPU Device: NVIDIA GeForce RTX 2060, Vendor: NVIDIA Corporation
+[LightGBM] [Info] Compiling OpenCL Kernel with 256 bins...
+[LightGBM] [Info] GPU programs have been built
+[LightGBM] [Info] Size of histogram bin entry: 8
+[LightGBM] [Info] 79 dense feature groups (16.48 MB) transferred to GPU in 0.013829 secs. 1 sparse feature groups
+[LightGBM] [Info] Start training from score -2.699849
+[LightGBM] [Info] Start training from score -2.971839
+[LightGBM] [Info] Start training from score -3.359076
+[LightGBM] [Info] Start training from score -3.615176
+[LightGBM] [Info] Start training from score -3.036432
+[LightGBM] [Info] Start training from score -3.186925
+[LightGBM] [Info] Start training from score -3.514937
+[LightGBM] [Info] Start training from score -3.774443
+[LightGBM] [Info] Start training from score -3.340086
+[LightGBM] [Info] Start training from score -3.514004
+[LightGBM] [Info] Start training from score -3.884340
+[LightGBM] [Info] Start training from score -4.031797
+[LightGBM] [Info] Start training from score -3.907110
+[LightGBM] [Info] Start training from score -4.044928
+[LightGBM] [Info] Start training from score -4.280172
+[LightGBM] [Info] Start training from score -4.538631
+[LightGBM] [Info] Start training from score -4.313843
+[LightGBM] [Info] Start training from score -4.516783
+[LightGBM] [Info] Start training from score -4.628283
+[LightGBM] [Info] Start training from score -4.960690
+[LightGBM] [Info] Start training from score -3.796260
+[LightGBM] [Info] Start training from score -3.947289
+[LightGBM] [Info] Start training from score -4.291270
+[LightGBM] [Info] Start training from score -4.463966
+[LightGBM] [Info] Start training from score -4.638760
+[LightGBM] [Info] Start training from score -4.787103
+[LightGBM] [Info] Start training from score -4.992226
+[LightGBM] [Info] Start training from score -5.135641
+[LightGBM] [Info] Start training from score -4.840708
+[LightGBM] [Info] Start training from score -5.026903
+[LightGBM] [Info] Start training from score -5.261224
+[LightGBM] [Info] Start training from score -5.393609
+[LightGBM] [Info] Start training from score -5.262116
+[LightGBM] [Info] Start training from score -5.385495
+[LightGBM] [Info] Start training from score -5.573896
+[LightGBM] [Info] Start training from score -5.817056
+[LightGBM] [Info] Start training from score -5.523945
+[LightGBM] [Info] Start training from score -5.669816
+[LightGBM] [Info] Start training from score -5.850260
+[LightGBM] [Info] Start training from score -6.084722
+[LightGBM] [Info] Start training from score -4.454764
+[LightGBM] [Info] Start training from score -4.255397
+[LightGBM] [Info] Start training from score -4.518904
+[LightGBM] [Info] Start training from score -4.719481
+[LightGBM] [Info] Start training from score -4.897349
+[LightGBM] [Info] Start training from score -4.871644
+[LightGBM] [Info] Start training from score -5.119254
+[LightGBM] [Info] Start training from score -5.296634
+[LightGBM] [Info] Start training from score -4.943014
+[LightGBM] [Info] Start training from score -5.167618
+[LightGBM] [Info] Start training from score -5.145922
+[LightGBM] [Info] Start training from score -5.303124
+[LightGBM] [Info] Start training from score -5.326655
+[LightGBM] [Info] Start training from score -5.443724
+[LightGBM] [Info] Start training from score -5.528596
+[LightGBM] [Info] Start training from score -5.702561
+[LightGBM] [Info] Start training from score -5.691527
+[LightGBM] [Info] Start training from score -5.798565
+[LightGBM] [Info] Start training from score -5.780410
+[LightGBM] [Info] Start training from score -5.999066
+[LightGBM] [Info] Start training from score -4.652254
+[LightGBM] [Info] Start training from score -4.907318
+[LightGBM] [Info] Start training from score -4.726772
+[LightGBM] [Info] Start training from score -4.911711
+[LightGBM] [Info] Start training from score -4.995640
+[LightGBM] [Info] Start training from score -5.453407
+[LightGBM] [Info] Start training from score -5.352706
+[LightGBM] [Info] Start training from score -5.486377
+[LightGBM] [Info] Start training from score -5.319065
+[LightGBM] [Info] Start training from score -5.561775
+[LightGBM] [Info] Start training from score -5.432015
+[LightGBM] [Info] Start training from score -5.542681
+[LightGBM] [Info] Start training from score -5.041834
+[LightGBM] [Info] Start training from score -5.356623
+[LightGBM] [Info] Start training from score -5.548609
+[LightGBM] [Info] Start training from score -5.324752
+[LightGBM] [Info] Start training from score -5.527431
+[LightGBM] [Info] Start training from score -5.736415
+[LightGBM] [Info] Start training from score -5.903078
+[LightGBM] [Info] Start training from score -5.789446
+[LightGBM] [Info] Start training from score -5.174956
+[LightGBM] [Info] Start training from score -5.281955
+[LightGBM] [Info] Start training from score -5.394628
+[LightGBM] [Info] Start training from score -5.464276
+[LightGBM] [Info] Start training from score -5.565396
+[LightGBM] [Info] Start training from score -5.928830
+[LightGBM] [Info] Start training from score -6.128342
+[LightGBM] [Info] Start training from score -6.010323
+[LightGBM] [Info] Start training from score -5.856712
+[LightGBM] [Info] Start training from score -6.103184
+[LightGBM] [Info] Start training from score -6.167308
+[LightGBM] [Info] Start training from score -6.169518
+[LightGBM] [Info] Start training from score -5.734981
+[LightGBM] [Info] Start training from score -5.966036
+[LightGBM] [Info] Start training from score -6.156331
+[LightGBM] [Info] Start training from score -5.826431
+[LightGBM] [Info] Start training from score -5.980581
+[LightGBM] [Info] Start training from score -6.194155
+[LightGBM] [Info] Start training from score -6.445470
+[LightGBM] [Info] Start training from score -6.487143
+[LightGBM] [Info] Start training from score -5.645942
+[LightGBM] [Info] Start training from score -5.756705
+[LightGBM] [Info] Start training from score -5.989781
+[LightGBM] [Info] Start training from score -6.165103
+[LightGBM] [Info] Start training from score -5.982415
+[LightGBM] [Info] Start training from score -6.284264
+[LightGBM] [Info] Start training from score -6.340401
+[LightGBM] [Info] Start training from score -6.673729
+[LightGBM] [Info] Start training from score -6.329957
+[LightGBM] [Info] Start training from score -6.596225
+[LightGBM] [Info] Start training from score -6.527458
+[LightGBM] [Info] Start training from score -6.722519
+[LightGBM] [Info] Start training from score -6.356274
+[LightGBM] [Info] Start training from score -6.487143
+[LightGBM] [Info] Start training from score -6.648411
+[LightGBM] [Info] Start training from score -6.794263
+[LightGBM] [Info] Start training from score -6.505548
+[LightGBM] [Info] Start training from score -6.738023
+[LightGBM] [Info] Start training from score -6.903303
+[LightGBM] [Info] Start training from score -6.969994
+Boosting round 0: training loss = 4.1946, validation loss = 4.3288
+Boosting round 49: training loss = 9.2604, validation loss = 9.9862
+Boosting round 99: training loss = 14.6892, validation loss = 15.4670
+--- Predicted Probabilities ---
+[[0.00000000e+00 0.00000000e+00 0.00000000e+00 ... 0.00000000e+00
+  0.00000000e+00 0.00000000e+00]
+ [0.00000000e+00 0.00000000e+00 0.00000000e+00 ... 0.00000000e+00
+  0.00000000e+00 0.00000000e+00]
+ [9.43278990e-02 1.26132092e-01 5.57007640e-02 ... 1.92410996e-04
+  1.78859543e-05 3.14601870e-04]
+ ...
+ [0.00000000e+00 0.00000000e+00 0.00000000e+00 ... 0.00000000e+00
+  0.00000000e+00 0.00000000e+00]
+ [1.05816426e-01 8.56083797e-02 3.00712879e-02 ... 7.79646306e-05
+  2.49658770e-05 1.80059976e-04]
+ [7.73488716e-02 3.51480576e-02 5.33074397e-02 ... 1.11403806e-04
+  6.12376469e-05 2.56522275e-04]]
+        importance
+mm              25
+jyo            750
+race            73
+turn            16
+grade            0
+raty            79
+femcnt         657
+alvt          1484
+time             0
+fixent         379
+en1           6386
+en2           5428
+en3           5120
+en4           5347
+en5           5143
+en6           4800
+nw1          19544
+nw2           5887
+nw3           5335
+nw4           5775
+nw5           5726
+nw6          21236
+n2w1         20596
+n2w2          4693
+n2w3          4587
+n2w4          5014
+n2w5          4292
+n2w6         18290
+n3w1         18250
+n3w2          4539
+n3w3          3989
+n3w4          4623
+n3w5          4245
+n3w6         16493
+lw1           4225
+lw2           3763
+lw3           3621
+lw4           3765
+lw5           3699
+lw6           5454
+l2w1          3692
+l2w2          3276
+l2w3          2945
+l2w4          3080
+l2w5          2831
+l2w6          3995
+l3w1          3447
+l3w2          2994
+l3w3          3010
+l3w4          2875
+l3w5          2714
+l3w6          3863
+m2w1          4659
+m2w2          4672
+m2w3          4921
+m2w4          5028
+m2w5          4716
+m2w6          5063
+sex1           119
+sex2            63
+sex3            86
+sex4           111
+sex5            85
+sex6            86
+lv1             88
+lv2             60
+lv3             57
+lv4             42
+lv5             28
+lv6             16
+age1          3419
+age2          3003
+age3          2817
+age4          2980
+age5          2904
+age6          2637
+weit1         5121
+weit2         4162
+weit3         4228
+weit4         4259
+weit5         3981
+weit6         3884
+fly1           266
+fly2           242
+fly3           198
+fly4           247
+fly5           237
+fly6           228
+late1            6
+late2            6
+late3           18
+late4            9
+late5           17
+late6           25
+avgst1        2602
+avgst2        2096
+avgst3        2071
+avgst4        2172
+avgst5        2141
+avgst6        2074
+Training set score: 0.1158
+Test set score: 0.0615
+              precision    recall  f1-score   support
+
+         123       0.12      0.40      0.19      3976
+         124       0.08      0.17      0.11      2959
+         125       0.08      0.05      0.06      2018
+         126       0.07      0.03      0.04      1523
+         132       0.08      0.06      0.07      2708
+         134       0.09      0.10      0.10      2526
+         135       0.08      0.05      0.06      1722
+         136       0.06      0.02      0.03      1272
+         142       0.09      0.06      0.07      1993
+         143       0.05      0.02      0.03      1703
+         145       0.07      0.03      0.04      1193
+         146       0.04      0.02      0.02      1016
+         152       0.06      0.02      0.03      1153
+         153       0.05      0.02      0.03       947
+         154       0.03      0.01      0.01       752
+         156       0.04      0.01      0.02       546
+         162       0.03      0.01      0.02       671
+         163       0.02      0.01      0.01       577
+         164       0.02      0.02      0.02       454
+         165       0.02      0.01      0.01       375
+         213       0.04      0.01      0.02      1203
+         214       0.03      0.01      0.02      1013
+         215       0.03      0.02      0.02       735
+         216       0.02      0.02      0.02       584
+         231       0.02      0.01      0.01       516
+         234       0.01      0.00      0.00       462
+         235       0.01      0.01      0.01       328
+         236       0.02      0.01      0.01       301
+         241       0.02      0.04      0.02       371
+         243       0.02      0.01      0.01       326
+         245       0.01      0.00      0.00       278
+         246       0.02      0.02      0.02       201
+         251       0.00      0.00      0.00       268
+         253       0.03      0.05      0.04       210
+         254       0.01      0.01      0.01       206
+         256       0.02      0.02      0.02       154
+         261       0.00      0.01      0.00       172
+         263       0.03      0.02      0.03       170
+         264       0.01      0.02      0.01       143
+         265       0.01      0.02      0.02        88
+         312       0.02      0.03      0.02       669
+         314       0.02      0.02      0.02       787
+         315       0.05      0.03      0.03       618
+         316       0.03      0.02      0.02       441
+         321       0.00      0.00      0.00       390
+         324       0.02      0.01      0.01       377
+         325       0.00      0.00      0.00       297
+         326       0.02      0.01      0.01       277
+         341       0.01      0.01      0.01       350
+         342       0.02      0.01      0.01       304
+         345       0.01      0.00      0.00       287
+         346       0.02      0.02      0.02       258
+         351       0.01      0.00      0.00       259
+         352       0.00      0.00      0.00       210
+         354       0.01      0.00      0.01       207
+         356       0.00      0.00      0.00       174
+         361       0.01      0.03      0.02       180
+         362       0.00      0.00      0.00       146
+         364       0.01      0.01      0.01       142
+         365       0.01      0.01      0.01       127
+         412       0.02      0.01      0.01       498
+         413       0.01      0.01      0.01       386
+         415       0.04      0.02      0.03       465
+         416       0.02      0.01      0.01       358
+         421       0.01      0.01      0.01       318
+         423       0.02      0.02      0.02       217
+         425       0.02      0.02      0.02       259
+         426       0.01      0.01      0.01       256
+         431       0.01      0.01      0.01       240
+         432       0.00      0.01      0.00       196
+         435       0.01      0.03      0.01       212
+         436       0.01      0.02      0.01       175
+         451       0.01      0.01      0.01       309
+         452       0.01      0.01      0.01       239
+         453       0.03      0.02      0.02       212
+         456       0.02      0.01      0.02       267
+         461       0.01      0.00      0.01       212
+         462       0.00      0.00      0.00       160
+         463       0.01      0.01      0.01       111
+         465       0.00      0.00      0.00       146
+         512       0.00      0.00      0.00       287
+         513       0.01      0.01      0.01       260
+         514       0.00      0.01      0.00       193
+         516       0.01      0.01      0.01       235
+         521       0.00      0.01      0.00       189
+         523       0.00      0.00      0.00       124
+         524       0.01      0.03      0.01       104
+         526       0.01      0.01      0.01       135
+         531       0.00      0.00      0.00       130
+         532       0.00      0.01      0.01       110
+         534       0.01      0.02      0.01       102
+         536       0.01      0.01      0.01        98
+         541       0.01      0.01      0.01       173
+         542       0.00      0.01      0.01       118
+         543       0.00      0.00      0.00        92
+         546       0.01      0.01      0.01       128
+         561       0.00      0.00      0.00       120
+         562       0.00      0.00      0.00        75
+         563       0.00      0.00      0.00        72
+         564       0.00      0.00      0.00        97
+         612       0.01      0.01      0.01       184
+         613       0.02      0.02      0.02       166
+         614       0.00      0.00      0.00       131
+         615       0.00      0.00      0.00        91
+         621       0.02      0.02      0.02       121
+         623       0.00      0.00      0.00        77
+         624       0.01      0.01      0.01        74
+         625       0.00      0.00      0.00        68
+         631       0.01      0.02      0.01        63
+         632       0.02      0.02      0.02        83
+         634       0.01      0.01      0.01        69
+         635       0.00      0.00      0.00        45
+         641       0.01      0.01      0.01        81
+         642       0.00      0.00      0.00        58
+         643       0.00      0.00      0.00        58
+         645       0.00      0.00      0.00        54
+         651       0.00      0.00      0.00        51
+         652       0.01      0.02      0.01        52
+         653       0.00      0.00      0.00        39
+         654       0.00      0.00      0.00        54
+
+    accuracy                           0.06     54010
+   macro avg       0.02      0.02      0.02     54010
+weighted avg       0.05      0.06      0.05     54010

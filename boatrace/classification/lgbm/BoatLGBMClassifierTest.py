@@ -45,14 +45,26 @@ class BoatLGBMClassifierTest:
         X = df[feature_name_list[0:feature_num-1]]
         y = df[feature_name_list[feature_num-1]]
         
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
+        # train / valid / test (60% / 20% / 20%) に分割
+        X_train_valid, X_test, y_train_valid, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
+        X_train, X_valid, y_train, y_valid = train_test_split(X_train_valid, y_train_valid, test_size=0.25, shuffle=False)
         
         #モデル파라미터 설정
         model_param_list = param_list_str.split(DelimiterType.DELIM_COMMA.value)
         model_param_dict = {}
         for param in model_param_list:
             key, value = param.split(DelimiterType.DELIM_EQUAL.value)
-            model_param_dict[key] = value
+            # Convert numeric values to int or float
+            try:
+                if '.' in value:
+                    model_param_dict[key] = float(value)
+                else:
+                    model_param_dict[key] = int(value)
+            except ValueError:
+                model_param_dict[key] = value
+        
+        # Debug: print parsed parameters
+        print("Model parameters:", model_param_dict)
             
         # 모델 생성
         model = lgb.LGBMClassifier(**model_param_dict)
@@ -60,19 +72,23 @@ class BoatLGBMClassifierTest:
         # モデル学習
         evals_result = {}
         #model.fit(X_train, y_train)
-        model.fit(X_train, y_train, eval_set=[(X_train, y_train), (X_test, y_test)], eval_metric='logloss',
-                  callbacks=[lgb.callback.early_stopping(10), lgb.callback.record_evaluation(evals_result)],)
+        model.fit(X_train, y_train, eval_set=[(X_train, y_train), (X_valid, y_valid)], eval_metric='logloss',
+                 callbacks=[lgb.callback.early_stopping(30), lgb.callback.record_evaluation(evals_result)],)
 
         # Print the training and validation loss at each boosting round
         #for i, (train_loss, val_loss) in enumerate(zip(evals_result['training']['multi_logloss'], evals_result['valid_1']['multi_logloss'])):
-        for i, (train_loss, val_loss) in enumerate(zip(evals_result['training']['multi_logloss'], evals_result['valid_1']['multi_logloss'])):
-            if (i+1) % 50 == 0 or i == 0 or i == len(evals_result['training']['multi_logloss']) -1:
-                print(f"Boosting round {i+1}: training loss = {train_loss:.4f}, validation loss = {val_loss:.4f}")        
+        # for i, (train_loss, val_loss) in enumerate(zip(evals_result['training']['multi_logloss'], evals_result['valid_1']['multi_logloss'])):
+        #     if (i+1) % 50 == 0 or i == 0 or i == len(evals_result['training']['multi_logloss']) -1:
+        #         print(f"Boosting round {i+1}: training loss = {train_loss:.4f}, validation loss = {val_loss:.4f}")        
+        metric_key = next(iter(evals_result['training'].keys()))
+        for i, (train_loss, val_loss) in enumerate(zip(evals_result['training'][metric_key], evals_result['valid_1'][metric_key])):
+            if i == 0 or i == 49 or i == 99: 
+                print(f"Boosting round {i}: training loss = {train_loss:.4f}, validation loss = {val_loss:.4f}")        
         
         y_expected  = y_test
-        y_predicted_proba = model.predict_proba(X_test)
-        print('--- Predicted Probabilities ---')
-        print(y_predicted_proba)
+        # y_predicted_proba = model.predict_proba(X_test)
+        # print('--- Predicted Probabilities ---')
+        # print(y_predicted_proba)
 
         y_predicted = model.predict(X_test)
 
@@ -83,6 +99,7 @@ class BoatLGBMClassifierTest:
 
         # Check for Overfitting
         print('Training set score: {:.4f}'.format(model.score(X_train, y_train)))
+        print('Validation set score: {:.4f}'.format(model.score(X_valid, y_valid)))
         print('Test set score: {:.4f}'.format(model.score(X_test, y_test)))
         
         # Classification Metrices

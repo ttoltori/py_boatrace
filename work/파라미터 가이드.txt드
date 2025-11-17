@@ -1,0 +1,173 @@
+# `learning_rate=0.1` 평가
+
+## 짧은 답변
+**0.1은 높은 편입니다.** 빠른 실험에는 괜찮지만, 최종 모델에는 **0.01~0.05** 권장합니다.
+
+---
+
+## Learning Rate 설명
+
+### **Learning Rate란?**
+각 트리가 전체 예측에 기여하는 정도를 조절하는 파라미터
+
+- **높은 값 (0.1~1.0)**: 빠른 학습, 과적합 위험 ↑
+- **낮은 값 (0.01~0.05)**: 느린 학습, 일반화 성능 ↑
+- **매우 낮은 값 (0.001~0.01)**: 매우 느림, 트리 개수 많이 필요
+
+---
+
+## 0.1의 장단점
+
+### ✅ **장점**
+- **빠른 수렴**: 적은 트리로도 학습 가능
+- **프로토타이핑**: 빠른 실험, 하이퍼파라미터 탐색에 적합
+- **초기 테스트**: 모델이 작동하는지 빠르게 확인
+
+### ❌ **단점**
+- **과적합 위험**: 훈련 데이터에 너무 빠르게 적응
+- **일반화 부족**: 테스트 데이터 성능 저하 가능
+- **불안정**: 최적점을 지나칠 수 있음
+
+---
+
+## 권장 설정
+
+### **1단계: 빠른 실험** (현재)
+```python
+learning_rate=0.1
+n_estimators=100  # 기본값
+```
+- **용도**: 피처 중요도 확인, 빠른 프로토타이핑
+- **시간**: 빠름
+
+### **2단계: 균형잡힌 설정** (권장)
+```python
+learning_rate=0.05
+n_estimators=200
+```
+- **용도**: 일반적인 학습
+- **시간**: 중간
+- **성능**: 좋은 균형
+
+### **3단계: 최종 모델**
+```python
+learning_rate=0.01
+n_estimators=500~1000
+early_stopping_rounds=50
+```
+- **용도**: 프로덕션 모델
+- **시간**: 느림
+- **성능**: 최고
+
+### **4단계: 최고 성능 (시간 여유 시)**
+```python
+learning_rate=0.005
+n_estimators=2000
+early_stopping_rounds=100
+```
+- **용도**: 경진대회, 최종 제출
+- **시간**: 매우 느림
+- **성능**: 최상
+
+---
+
+## 실전 권장사항
+
+### **당신의 데이터 (270K 행, 100 피처)**
+
+```python
+# 옵션 1: 빠른 개발 (현재)
+"learning_rate=0.1,n_estimators=100"
+
+# 옵션 2: 권장 설정
+"learning_rate=0.05,n_estimators=300"
+
+# 옵션 3: 최종 모델
+"learning_rate=0.01,n_estimators=1000"
+```
+
+---
+
+## Early Stopping과 함께 사용
+
+`early_stopping_rounds`를 사용하면 learning rate를 낮춰도 시간 낭비 없음:
+
+```python
+# BoatLGBMClassifierTest.py에 이미 있음
+lgb.callback.early_stopping(10)
+```
+
+**권장 조합**:
+```python
+learning_rate=0.01
+n_estimators=1000  # 최대값
+early_stopping_rounds=50  # 50 라운드 개선 없으면 중단
+```
+
+---
+
+## 실험 가이드
+
+### **Step 1: 현재 설정으로 baseline 확인**
+```python
+learning_rate=0.1, n_estimators=100
+```
+→ Training score vs Test score 차이 확인
+
+### **Step 2: Overfitting 확인**
+- **Training score >> Test score**: 과적합 → learning_rate 낮추기
+- **Training score ≈ Test score**: 적절함
+- **둘 다 낮음**: Underfitting → 피처 추가 또는 모델 복잡도 증가
+
+### **Step 3: Learning rate 조정**
+```python
+# 과적합이 심하면
+learning_rate=0.05, n_estimators=200
+
+# 과적합이 매우 심하면
+learning_rate=0.01, n_estimators=500
+```
+
+---
+
+## 다른 파라미터와의 관계
+
+### **Learning Rate ↓ → 다른 파라미터 조정**
+
+```python
+# Learning rate를 낮추면
+learning_rate=0.01
+
+# 이것들도 조정
+n_estimators=1000           # 트리 개수 증가
+early_stopping_rounds=50    # 조기 중단 라운드 증가
+max_depth=6                 # 트리 깊이는 유지 또는 약간 증가
+min_child_samples=20        # 과적합 방지
+```
+
+---
+
+## 최종 권장
+
+### **현재 단계 (실험/개발)**
+```python
+"boosting_type=gbdt,learning_rate=0.1,n_estimators=100,device_type=gpu,max_bin=255,max_cat_threshold=63"
+```
+
+### **다음 단계 (성능 개선)**
+```python
+"boosting_type=gbdt,learning_rate=0.05,n_estimators=300,device_type=gpu,max_bin=255,max_cat_threshold=63"
+```
+
+### **최종 모델 (프로덕션)**
+```python
+"boosting_type=gbdt,learning_rate=0.01,n_estimators=1000,device_type=gpu,max_bin=255,max_cat_threshold=63"
+```
+
+---
+
+## 결론
+
+**`learning_rate=0.1`은 빠른 실험에는 적절하지만, 최종 모델에는 0.01~0.05를 권장합니다.**
+
+현재 설정으로 먼저 실험하고, Training/Test score 차이를 보고 조정하세요. 과적합이 보이면 learning rate를 낮추고 n_estimators를 늘리세요.

@@ -48,7 +48,14 @@ class BoatLGBMClassifierTrainer:
         model_param_dict = {}
         for param in model_param_list:
             key, value = param.split(DelimiterType.DELIM_EQUAL.value)
-            model_param_dict[key] = value
+            # Convert numeric values to int or float
+            try:
+                if '.' in value:
+                    model_param_dict[key] = float(value)
+                else:
+                    model_param_dict[key] = int(value)
+            except ValueError:
+                model_param_dict[key] = value
             
         # 모델 생성
         model = lgb.LGBMClassifier(**model_param_dict)

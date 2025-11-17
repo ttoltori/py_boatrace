@@ -1,0 +1,372 @@
+PS C:\Dev\github\py_boatrace>  c:; cd 'c:\Dev\github\py_boatrace'; & 'c:\Dev\anaconda3\python.exe' 'c:\Users\ttolt\.windsurf\extensions\ms-python.debugpy-2025.14.1-win32-x64\bundled\libs\debugpy\launcher' '57084' '--' 'C:\Dev\github\py_boatrace/boatrace/classification/lgbm/BoatLGBMClassifierTest.py' 'device_type=gpu,boosting_type=gbdt,learning_rate=0.01,max_bin=255,max_cat_threshold=63,min_child_samples=20,reg_lambda=1.0,num_leaves=31' 'C:/Dev/experiment/expr10/arff/39104_rank1.csv' 'model_filepath' 'mm,jyo,race,turn,grade,raty,femcnt,alvt,time,fixent,en1,en2,en3,en4,en5,en6,nw1,nw2,nw3,nw4,nw5,nw6,n2w1,n2w2,n2w3,n2w4,n2w5,n2w6,n3w1,n3w2,n3w3,n3w4,n3w5,n3w6,lw1,lw2,lw3,lw4,lw5,lw6,l2w1,l2w2,l2w3,l2w4,l2w5,l2w6,l3w1,l3w2,l3w3,l3w4,l3w5,l3w6,m2w1,m2w2,m2w3,m2w4,m2w5,m2w6,sex1,sex2,sex3,sex4,sex5,sex6,lv1,lv2,lv3,lv4,lv5,lv6,age1,age2,age3,age4,age5,age6,weit1,weit2,weit3,weit4,weit5,weit6,fly1,fly2,fly3,fly4,fly5,fly6,late1,late2,late3,late4,late5,late6,avgst1,avgst2,avgst3,avgst4,avgst5,avgst6,class' 'category,category,category,category,category,category,int,int,category,category,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,float,flory,category,category,category,category,int,int,int,int,int,int,float,float,float,float,float,float,int,int,int,int,int,int,int,int,int,int,int,int,float,float,float,float,float,float,category'
+Model parameters: {'device_type': 'gpu', 'boosting_type': 'gbdt', 'learning_rate': 0.01, 'max_bin': 255, 'max_cat_threshold': 63, 'min_child_samples': 20, 'reg_lambda': 1.0, 'num_leaves': 31}
+[LightGBM] [Info] This is the GPU trainer!!
+[LightGBM] [Info] Total Bins 13981
+[LightGBM] [Info] Number of data points in the train set: 216036, number of used features: 100
+[LightGBM] [Info] Using GPU Device: NVIDIA GeForce RTX 2060, Vendor: NVIDIA Corporation
+[LightGBM] [Info] Compiling OpenCL Kernel with 256 bins...
+[LightGBM] [Info] GPU programs have been built
+[LightGBM] [Info] Size of histogram bin entry: 8
+[LightGBM] [Info] 79 dense feature groups (16.48 MB) transferred to GPU in 0.012408 secs. 1 sparse feature groups
+[LightGBM] [Info] Start training from score -2.699849
+[LightGBM] [Info] Start training from score -2.971839
+[LightGBM] [Info] Start training from score -3.359076
+[LightGBM] [Info] Start training from score -3.615176
+[LightGBM] [Info] Start training from score -3.036432
+[LightGBM] [Info] Start training from score -3.186925
+[LightGBM] [Info] Start training from score -3.514937
+[LightGBM] [Info] Start training from score -3.774443
+[LightGBM] [Info] Start training from score -3.340086
+[LightGBM] [Info] Start training from score -3.514004
+[LightGBM] [Info] Start training from score -3.884340
+[LightGBM] [Info] Start training from score -4.031797
+[LightGBM] [Info] Start training from score -3.907110
+[LightGBM] [Info] Start training from score -4.044928
+[LightGBM] [Info] Start training from score -4.280172
+[LightGBM] [Info] Start training from score -4.538631
+[LightGBM] [Info] Start training from score -4.313843
+[LightGBM] [Info] Start training from score -4.516783
+[LightGBM] [Info] Start training from score -4.628283
+[LightGBM] [Info] Start training from score -4.960690
+[LightGBM] [Info] Start training from score -3.796260
+[LightGBM] [Info] Start training from score -3.947289
+[LightGBM] [Info] Start training from score -4.291270
+[LightGBM] [Info] Start training from score -4.463966
+[LightGBM] [Info] Start training from score -4.638760
+[LightGBM] [Info] Start training from score -4.787103
+[LightGBM] [Info] Start training from score -4.992226
+[LightGBM] [Info] Start training from score -5.135641
+[LightGBM] [Info] Start training from score -4.840708
+[LightGBM] [Info] Start training from score -5.026903
+[LightGBM] [Info] Start training from score -5.261224
+[LightGBM] [Info] Start training from score -5.393609
+[LightGBM] [Info] Start training from score -5.262116
+[LightGBM] [Info] Start training from score -5.385495
+[LightGBM] [Info] Start training from score -5.573896
+[LightGBM] [Info] Start training from score -5.817056
+[LightGBM] [Info] Start training from score -5.523945
+[LightGBM] [Info] Start training from score -5.669816
+[LightGBM] [Info] Start training from score -5.850260
+[LightGBM] [Info] Start training from score -6.084722
+[LightGBM] [Info] Start training from score -4.454764
+[LightGBM] [Info] Start training from score -4.255397
+[LightGBM] [Info] Start training from score -4.518904
+[LightGBM] [Info] Start training from score -4.719481
+[LightGBM] [Info] Start training from score -4.897349
+[LightGBM] [Info] Start training from score -4.871644
+[LightGBM] [Info] Start training from score -5.119254
+[LightGBM] [Info] Start training from score -5.296634
+[LightGBM] [Info] Start training from score -4.943014
+[LightGBM] [Info] Start training from score -5.167618
+[LightGBM] [Info] Start training from score -5.145922
+[LightGBM] [Info] Start training from score -5.303124
+[LightGBM] [Info] Start training from score -5.326655
+[LightGBM] [Info] Start training from score -5.443724
+[LightGBM] [Info] Start training from score -5.528596
+[LightGBM] [Info] Start training from score -5.702561
+[LightGBM] [Info] Start training from score -5.691527
+[LightGBM] [Info] Start training from score -5.798565
+[LightGBM] [Info] Start training from score -5.780410
+[LightGBM] [Info] Start training from score -5.999066
+[LightGBM] [Info] Start training from score -4.652254
+[LightGBM] [Info] Start training from score -4.907318
+[LightGBM] [Info] Start training from score -4.726772
+[LightGBM] [Info] Start training from score -4.911711
+[LightGBM] [Info] Start training from score -4.995640
+[LightGBM] [Info] Start training from score -5.453407
+[LightGBM] [Info] Start training from score -5.352706
+[LightGBM] [Info] Start training from score -5.486377
+[LightGBM] [Info] Start training from score -5.319065
+[LightGBM] [Info] Start training from score -5.561775
+[LightGBM] [Info] Start training from score -5.432015
+[LightGBM] [Info] Start training from score -5.542681
+[LightGBM] [Info] Start training from score -5.041834
+[LightGBM] [Info] Start training from score -5.356623
+[LightGBM] [Info] Start training from score -5.548609
+[LightGBM] [Info] Start training from score -5.324752
+[LightGBM] [Info] Start training from score -5.527431
+[LightGBM] [Info] Start training from score -5.736415
+[LightGBM] [Info] Start training from score -5.903078
+[LightGBM] [Info] Start training from score -5.789446
+[LightGBM] [Info] Start training from score -5.174956
+[LightGBM] [Info] Start training from score -5.281955
+[LightGBM] [Info] Start training from score -5.394628
+[LightGBM] [Info] Start training from score -5.464276
+[LightGBM] [Info] Start training from score -5.565396
+[LightGBM] [Info] Start training from score -5.928830
+[LightGBM] [Info] Start training from score -6.128342
+[LightGBM] [Info] Start training from score -6.010323
+[LightGBM] [Info] Start training from score -5.856712
+[LightGBM] [Info] Start training from score -6.103184
+[LightGBM] [Info] Start training from score -6.167308
+[LightGBM] [Info] Start training from score -6.169518
+[LightGBM] [Info] Start training from score -5.734981
+[LightGBM] [Info] Start training from score -5.966036
+[LightGBM] [Info] Start training from score -6.156331
+[LightGBM] [Info] Start training from score -5.826431
+[LightGBM] [Info] Start training from score -5.980581
+[LightGBM] [Info] Start training from score -6.194155
+[LightGBM] [Info] Start training from score -6.445470
+[LightGBM] [Info] Start training from score -6.487143
+[LightGBM] [Info] Start training from score -5.645942
+[LightGBM] [Info] Start training from score -5.756705
+[LightGBM] [Info] Start training from score -5.989781
+[LightGBM] [Info] Start training from score -6.165103
+[LightGBM] [Info] Start training from score -5.982415
+[LightGBM] [Info] Start training from score -6.284264
+[LightGBM] [Info] Start training from score -6.340401
+[LightGBM] [Info] Start training from score -6.673729
+[LightGBM] [Info] Start training from score -6.329957
+[LightGBM] [Info] Start training from score -6.596225
+[LightGBM] [Info] Start training from score -6.527458
+[LightGBM] [Info] Start training from score -6.722519
+[LightGBM] [Info] Start training from score -6.356274
+[LightGBM] [Info] Start training from score -6.487143
+[LightGBM] [Info] Start training from score -6.648411
+[LightGBM] [Info] Start training from score -6.794263
+[LightGBM] [Info] Start training from score -6.505548
+[LightGBM] [Info] Start training from score -6.738023
+[LightGBM] [Info] Start training from score -6.903303
+[LightGBM] [Info] Start training from score -6.969994
+Training until validation scores don't improve for 30 rounds
+Did not meet early stopping. Best iteration is:
+[100]   training's multi_logloss: 3.70379       valid_1's multi_logloss: 3.94386
+Boosting round 0: training loss = 4.2380, validation loss = 4.1735
+Boosting round 49: training loss = 3.9055, validation loss = 4.0129
+Boosting round 99: training loss = 3.7038, validation loss = 3.9439
+        importance
+mm             417
+jyo          13478
+race          1114
+turn           136
+grade            6
+raty           828
+femcnt         230
+alvt          1414
+time             3
+fixent         204
+en1           4664
+en2           3761
+en3           4036
+en4           3870
+en5           4125
+en6           3936
+nw1          11504
+nw2          10994
+nw3          10866
+nw4          11617
+nw5          12025
+nw6          11341
+n2w1          8185
+n2w2          7673
+n2w3          8000
+n2w4          8468
+n2w5          7966
+n2w6          7633
+n3w1          6055
+n3w2          7276
+n3w3          7329
+n3w4          8657
+n3w5          8844
+n3w6          8248
+lw1           4200
+lw2           4124
+lw3           4023
+lw4           3955
+lw5           4064
+lw6           4366
+l2w1          3927
+l2w2          3639
+l2w3          3571
+l2w4          3594
+l2w5          3382
+l2w6          3528
+l3w1          3384
+l3w2          3340
+l3w3          3562
+l3w4          3454
+l3w5          3396
+l3w6          3507
+m2w1          5776
+m2w2          5573
+m2w3          6018
+m2w4          6147
+m2w5          5453
+m2w6          5681
+sex1           100
+sex2            57
+sex3            25
+sex4            50
+sex5            53
+sex6            35
+lv1           1110
+lv2            480
+lv3            545
+lv4            299
+lv5            240
+lv6            318
+age1          2436
+age2          2111
+age3          2137
+age4          2066
+age5          2127
+age6          2133
+weit1         3909
+weit2         3913
+weit3         3731
+weit4         3758
+weit5         3802
+weit6         3925
+fly1           215
+fly2           225
+fly3           183
+fly4           226
+fly5           293
+fly6           316
+late1            0
+late1            0
+late2            0
+late3            0
+late4            0
+late5            0
+late6            0
+avgst1        2237
+avgst2        2162
+avgst3        2279
+avgst4        2219
+avgst5        1868
+avgst6        1850
+Training set score: 0.1411
+Test set score: 0.0901
+c:\Dev\anaconda3\Lib\site-packages\sklearn\metrics\_classification.py:1344: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+c:\Dev\anaconda3\Lib\site-packages\sklearn\metrics\_classification.py:1344: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+c:\Dev\anaconda3\Lib\site-packages\sklearn\metrics\_classification.py:1344: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+              precision    recall  f1-score   support
+
+         123       0.09      0.75      0.16      3976
+         124       0.10      0.20      0.13      2959
+         125       0.12      0.05      0.07      2018
+         126       0.09      0.02      0.04      1523
+         132       0.10      0.06      0.07      2708
+         134       0.11      0.14      0.12      2526
+         135       0.11      0.06      0.08      1722
+         136       0.14      0.04      0.06      1272
+         142       0.10      0.08      0.09      1993
+         143       0.11      0.04      0.05      1703
+         145       0.10      0.03      0.05      1193
+         146       0.09      0.01      0.02      1016
+         152       0.11      0.02      0.04      1153
+         153       0.07      0.01      0.02       947
+         154       0.08      0.00      0.00       752
+         156       0.03      0.01      0.01       546
+         162       0.07      0.01      0.02       671
+         163       0.12      0.01      0.02       577
+         164       0.06      0.01      0.02       454
+         165       0.10      0.00      0.01       375
+         213       0.09      0.03      0.04      1203
+         214       0.07      0.01      0.02      1013
+         215       0.09      0.01      0.02       735
+         216       0.07      0.01      0.02       584
+         231       0.00      0.00      0.00       516
+         234       0.10      0.02      0.04       462
+         235       0.06      0.02      0.03       328
+         236       0.04      0.01      0.02       301
+         241       0.00      0.00      0.00       371
+         243       0.10      0.01      0.02       326
+         245       0.08      0.01      0.02       278
+         246       0.05      0.01      0.02       201
+         251       0.00      0.00      0.00       268
+         253       0.10      0.02      0.03       210
+         254       0.00      0.00      0.00       206
+         256       0.08      0.01      0.02       154
+         261       0.00      0.00      0.00       172
+         263       0.07      0.01      0.02       170
+         264       0.14      0.03      0.05       143
+         265       0.00      0.00      0.00        88
+         312       0.00      0.00      0.00       669
+         314       0.07      0.01      0.02       787
+         315       0.08      0.01      0.01       618
+         316       0.06      0.01      0.01       441
+         321       0.00      0.00      0.00       390
+         324       0.02      0.01      0.01       377
+         325       0.02      0.00      0.01       297
+         326       0.00      0.00      0.00       277
+         341       0.07      0.01      0.01       350
+         342       0.12      0.01      0.02       304
+         345       0.06      0.02      0.03       287
+         346       0.08      0.03      0.04       258
+         351       0.00      0.00      0.00       259
+         352       0.00      0.00      0.00       210
+         354       0.00      0.00      0.00       207
+         356       0.00      0.00      0.00       174
+         361       0.00      0.00      0.00       180
+         362       0.00      0.00      0.00       146
+         364       0.20      0.01      0.01       142
+         365       0.00      0.00      0.00       127
+         412       0.04      0.00      0.00       498
+         413       0.14      0.00      0.01       386
+         415       0.06      0.01      0.02       465
+         416       0.06      0.01      0.01       358
+         421       0.00      0.00      0.00       318
+         423       0.00      0.00      0.00       217
+         425       0.04      0.01      0.01       259
+         426       0.14      0.01      0.01       256
+         431       0.15      0.01      0.02       240
+         432       0.20      0.01      0.01       196
+         435       0.06      0.00      0.01       212
+         436       0.00      0.00      0.00       175
+         451       0.00      0.00      0.00       309
+         452       0.12      0.01      0.02       239
+         453       0.07      0.00      0.01       212
+         456       0.10      0.01      0.02       267
+         461       0.06      0.00      0.01       212
+         462       0.09      0.01      0.01       160
+         463       0.00      0.00      0.00       111
+         465       0.00      0.00      0.00       146
+         512       0.00      0.00      0.00       287
+         513       0.00      0.00      0.00       260
+         514       0.00      0.00      0.00       193
+         516       0.00      0.00      0.00       235
+         521       0.00      0.00      0.00       189
+         523       0.00      0.00      0.00       124
+         524       0.00      0.00      0.00       104
+         526       0.00      0.00      0.00       135
+         531       0.00      0.00      0.00       130
+         532       0.00      0.00      0.00       110
+         534       0.00      0.00      0.00       102
+         536       0.07      0.01      0.02        98
+         541       0.00      0.00      0.00       173
+         542       0.00      0.00      0.00       118
+         543       0.00      0.00      0.00        92
+         546       0.00      0.00      0.00       128
+         561       0.00      0.00      0.00       120
+         562       0.00      0.00      0.00        75
+         563       0.00      0.00      0.00        72
+         564       0.00      0.00      0.00        97
+         612       0.00      0.00      0.00       184
+         613       0.00      0.00      0.00       166
+         614       0.00      0.00      0.00       131
+         615       0.00      0.00      0.00        91
+         621       0.20      0.01      0.02       121
+         623       0.00      0.00      0.00        77
+         624       0.00      0.00      0.00        74
+         625       0.00      0.00      0.00        68
+         631       0.00      0.00      0.00        63
+         632       0.00      0.00      0.00        83
+         634       0.00      0.00      0.00        69
+         635       0.00      0.00      0.00        45
+         641       0.00      0.00      0.00        81
+         642       0.00      0.00      0.00        58
+         643       0.00      0.00      0.00        58
+         645       0.00      0.00      0.00        54
+         651       0.00      0.00      0.00        51
+         652       0.00      0.00      0.00        52
+         653       0.00      0.00      0.00        39
+         654       0.00      0.00      0.00        54
+
+    accuracy                           0.09     54010
+   macro avg       0.05      0.02      0.02     54010
+weighted avg       0.08      0.09      0.05     54010
