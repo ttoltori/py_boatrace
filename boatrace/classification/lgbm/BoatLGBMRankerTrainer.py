@@ -2,13 +2,13 @@ from _datetime import datetime
 import json
 from logging import getLogger, config
 import sys
-import pickle
+import os
 
 from boatrace.common.BoatEnum import DelimiterType
 from boatrace.util.PropertyUtil import PropertyUtil
 import pandas as pd
-from sklearn.utils.class_weight import compute_class_weight
-from imblearn.over_sampling import SMOTE
+import math
+from sklearn.metrics._ranking import ndcg_score
 import numpy as np
 import lightgbm as lgb
 
@@ -44,48 +44,171 @@ class BoatLGBMRankerTrainer:
         
         # csv data 取得
         df = pd.read_csv(csv_filepath, names=feature_name_list, dtype=data_type_dict, engine='python')
-        df = df.sort_values([ 'raceid', 'waku'])
-
-        X = df[feature_name_list[0:feature_num-1]]
-        y = df[feature_name_list[feature_num-1]]
+        df = df.sort_values(['raceid', 'waku'])
         
-        #モデル파라미터 설정
-        #model_param_list = param_list_str.split(DelimiterType.DELIM_COMMA.value)
-        #model_param_dict = {}
-        #for param in model_param_list:
-        #  key, value = param.split(DelimiterType.DELIM_EQUAL.value)
-        #    model_param_dict[key] = value
-
+        # 데이터 분할 (train 80%, val 20%)
+        keys = df['raceid'].unique()
+        date_split_val = keys[math.trunc(len(keys) * 0.8)]
+        
+        df_train = df[df['raceid'] <= date_split_val]
+        df_val = df[df['raceid'] > date_split_val]
+        
+        self._logger.info(f"df_train length={len(df_train)}")
+        self._logger.info(f"df_val length={len(df_val)}")
+        
+        X_train = df_train.drop(['class'], axis=1)
+        X_val = df_val.drop(['class'], axis=1)
+        
+        y_train = df_train['class']
+        y_val = df_val['class']
+        
+        # class 값 확인 (1=1위인지, 6=1위인지)
+        # LGBMRanker는 높은 label = 상위 순위로 학습함
+        # class가 순위(1=1위, 6=6위)라면 반전 필요: 7 - class
+        if y_train.min() == 1 and y_train.max() == 6:
+            self._logger.info("class가 순위(1=1위)로 판단됨. Label 반전 적용 (7 - class)")
+            y_train = 7 - y_train
+            y_val = 7 - y_val
+        
+        # モデル파라미터 설정
+        model_param_list = param_list_str.split(DelimiterType.DELIM_COMMA.value)
+        model_param_dict = {}
+        for param in model_param_list:
+            key, value = param.split(DelimiterType.DELIM_EQUAL.value)
+            # 숫자 타입 변환
+            if value.replace('.', '').replace('-', '').isdigit():
+                if '.' in value:
+                    value = float(value)
+                else:
+                    value = int(value)
+            model_param_dict[key] = value
+        
         # 모델 생성
-        #model = cab.CatBoostRanker(**model_param_dict)
-
-        #param = {}
-        #param = {'boosting_type':'dart', 'max_depth':10, 'num_leaves':128, 'learning_rate':0.01, 'reg_alpha':0.05}
-        param = {'device_type' : 'gpu',  'learning_rate'  : 0.01}
-        #param = { 'learning_rate'  : 0.01}
+        self._logger.info(f"Model parameters: {model_param_dict}")
+        model = lgb.LGBMRanker(**model_param_dict)
         
-        #가중치 설정 - 클래스불균형대책
-        class_weights = compute_class_weight(class_weight="balanced", classes=np.unique(y), y=y)
-        class_weights = dict(zip(np.unique(y), class_weights))
-        param['class_weight'] = class_weights
-
-        # SMOTE 적용- 클래스불균형대책
-        # smote = SMOTE(random_state=42)
-        # X_resampled, y_resampled = smote.fit_resample(X, y)
-
-        #param = {'iterations': 100}   
-        # 모델 생성
-        model = lgb.LGBMRanker(**param)
-        
-        train_group = X['raceid'].value_counts()
-        # train_group = X_resampled['raceid'].value_counts()
+        train_group = X_train['raceid'].value_counts()
         train_group = train_group.sort_index()
         
-        # model.fit(X_train, y_train)
-        model.fit(X, y, group=train_group)
-        # model.fit(X_resampled, y_resampled, group=train_group)
+        eval_group = X_val['raceid'].value_counts()
+        eval_group = eval_group.sort_index()
         
-        pickle.dump(model, open(model_filepath, 'wb'))
+        # model.fit with early stopping
+        callbacks = [
+            lgb.early_stopping(stopping_rounds=50, verbose=True),
+            lgb.log_evaluation(period=50)
+        ]
+        model.fit(
+            X_train, y_train,
+            group=train_group,
+            eval_set=[(X_val, y_val)],
+            eval_group=[list(eval_group)],
+            callbacks=callbacks
+        )
+        self._logger.info(f"Best iteration: {model.best_iteration_}")
+        
+        # 모델 성능 평가
+        self._print_model_performance(model, X_train, y_train, X_val, y_val, df_val)
+        
+        # Feature Importance 출력
+        self._print_feature_importance(model, df)
+        
+        # 모델 저장
+        self._save_model(model, model_filepath)
+        
+        return model
+    
+    def _print_model_performance(self, model, X_train, y_train, X_val, y_val, df_val):
+        """
+        모델 성능을 상세하게 출력
+        """
+        self._logger.info("="*60)
+        self._logger.info("                    모델 성능 평가 결과")
+        self._logger.info("="*60)
+        
+        # 각 데이터셋에 대한 예측
+        y_train_pred = model.predict(X_train)
+        y_val_pred = model.predict(X_val)
+        
+        # NDCG 스코어 계산
+        train_ndcg = ndcg_score([y_train], [y_train_pred])
+        val_ndcg = ndcg_score([y_val], [y_val_pred])
+        
+        self._logger.info("[NDCG Score]")
+        self._logger.info(f"  Train NDCG : {train_ndcg:.6f}")
+        self._logger.info(f"  Valid NDCG : {val_ndcg:.6f}")
+        
+        # 레이스별 Top-K 정확도 계산
+        self._logger.info("[Top-K 정확도 (검증 데이터)]")
+        val_races = df_val['raceid'].unique()
+        top1_correct = 0
+        top2_correct = 0
+        top3_correct = 0
+        total_races = len(val_races)
+        
+        for race_id in val_races:
+            race_mask = df_val['raceid'] == race_id
+            race_y_true = y_val[race_mask].values
+            race_y_pred = y_val_pred[race_mask]
+            
+            # 예측 순위 (높은 점수가 1위)
+            pred_rank = np.argsort(-race_y_pred)
+            # 실제 1위 (반전된 label에서 가장 높은 값 = 1위)
+            true_winner_idx = np.argmax(race_y_true)
+            
+            if pred_rank[0] == true_winner_idx:
+                top1_correct += 1
+            if true_winner_idx in pred_rank[:2]:
+                top2_correct += 1
+            if true_winner_idx in pred_rank[:3]:
+                top3_correct += 1
+        
+        self._logger.info(f"  Top-1 정확도: {top1_correct}/{total_races} ({100*top1_correct/total_races:.2f}%)")
+        self._logger.info(f"  Top-2 정확도: {top2_correct}/{total_races} ({100*top2_correct/total_races:.2f}%)")
+        self._logger.info(f"  Top-3 정확도: {top3_correct}/{total_races} ({100*top3_correct/total_races:.2f}%)")
+        self._logger.info("="*60)
+    
+    def _print_feature_importance(self, model, df):
+        """
+        Feature Importance를 정렬하여 출력
+        """
+        self._logger.info("="*60)
+        self._logger.info("                  Feature Importance (Top 20)")
+        self._logger.info("="*60)
+        
+        feature = list(df.drop(columns=['class']).columns)
+        importances = np.array(model.feature_importances_)
+        
+        df_importance = pd.DataFrame({'feature': feature, 'importance': importances})
+        df_importance = df_importance.sort_values('importance', ascending=False)
+        
+        max_importance = df_importance['importance'].max()
+        
+        self._logger.info(f"{'Rank':<6} {'Feature':<20} {'Importance':<12} {'Bar'}")
+        self._logger.info("-" * 60)
+        
+        for idx, (_, row) in enumerate(df_importance.head(20).iterrows()):
+            bar_length = int(30 * row['importance'] / max_importance) if max_importance > 0 else 0
+            bar = '█' * bar_length
+            self._logger.info(f"{idx+1:<6} {row['feature']:<20} {row['importance']:<12.0f} {bar}")
+        
+        self._logger.info("="*60)
+    
+    def _save_model(self, model, model_filepath):
+        """
+        학습된 모델을 파일로 저장
+        """
+        # 디렉토리가 없으면 생성
+        model_dir = os.path.dirname(model_filepath)
+        if model_dir and not os.path.exists(model_dir):
+            os.makedirs(model_dir)
+            self._logger.info(f"디렉토리 생성: {model_dir}")
+        
+        # 모델 저장 (LightGBM native format)
+        model.booster_.save_model(model_filepath)
+        
+        self._logger.info(f"모델 저장 완료: {model_filepath}")
+        self._logger.info(f"파일 크기: {os.path.getsize(model_filepath) / 1024:.2f} KB")
         
 def logSetup():
     """
@@ -107,7 +230,8 @@ def main(argv):
     
     #param len check
     if len(argv) < 6:
-        print('Usage: python xxxModelGenerator.py {params} {csv_file_path} {model_file_path} {feature_name_list} {feature_type_list}')
+        logger = getLogger('server')
+        logger.error('Usage: python xxxModelGenerator.py {params} {csv_file_path} {model_file_path} {feature_name_list} {feature_type_list}')
         return -1
     
     prop = PropertyUtil.getInstance()

@@ -18,7 +18,8 @@
             "class": "logging.FileHandler",
             "level": "DEBUG",
             "formatter": "simple",
-            "filename": "to be replaced"
+            "filename": "to be replaced",
+            "encoding": "utf-8"
         }
     },
 

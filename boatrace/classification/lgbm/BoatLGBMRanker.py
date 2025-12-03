@@ -1,9 +1,9 @@
 from logging import getLogger, Logger
 from multiprocessing.dummy import list
-import pickle
 
 import numpy as np
 from numpy import ndarray
+import lightgbm as lgb
 
 from boatrace.classification.lgbm.AbstractBoatClassifier import AbstractBoatClassifier
 from boatrace.common.BoatConst import BoatConst
@@ -12,7 +12,6 @@ from boatrace.server.RemoteRequestParam import RemoteRequestParam
 from boatrace.util.PropertyUtil import PropertyUtil
 import pandas as pd
 from boatrace.common.BoatEnum import DelimiterType
-from lightgbm.sklearn import LGBMRanker
 
 
 #
@@ -23,26 +22,27 @@ class BoatLGBMRanker(AbstractBoatClassifier):
         self._mi_:ModelInfo = mi
         self._prop_:PropertyUtil = PropertyUtil.getInstance()
         self._dtype_:dict
-        self._model_:LGBMRanker
+        self._model_:lgb.Booster = None
         self._isInitialized_:bool = False
         self._logger_:Logger = getLogger('server')
     
     def _initialize_(self, param:RemoteRequestParam):
-        # predictionに必要なfeature, typeを定義しておく
+        # prediction에 필요한 feature, type을 정의しておく
         self._dtype_ = {}
         for i in range(len(self._mi_.feature_ids)):
             self._dtype_[self._mi_.feature_ids[i]] = self._mi_.feature_types[i]
 
-        # 모델 로드
+        # 모델 로드 (LightGBM native format)
         model_filepath = self._createModelFilepath(param)
-        self._model_ = pickle.load(open(model_filepath, 'rb')) 
+        self._model_ = lgb.Booster(model_file=model_filepath)
+        self._logger_.info(f"모델 로드 완료: {model_filepath}") 
     
     def predictProba(self, param:RemoteRequestParam) -> list[float]:
         """
-        要求されたpredictionを実行する
+        요구된 prediction을 실행한다
         return = propabilities ex) [0.65,0.09,...]
         """
-        # 初期化チェック
+        # 초기화 체크
         if self._isInitialized_ == False:
             self._initialize_(param)
             self._isInitialized_ = True
@@ -55,7 +55,8 @@ class BoatLGBMRanker(AbstractBoatClassifier):
         df = pd.DataFrame(arr2d, columns=self._mi_.feature_ids).astype(dtype=self._dtype_)
         
         arr:ndarray = self._model_.predict(df)
-        probabilities = self._ranking_scores_to_probabilities(-arr);
+        # 학습 시 label 반전(7-class)을 적용했으므로, 높은 점수 = 상위 순위
+        probabilities = self._ranking_scores_to_probabilities(arr);
         #probabilities = 1 - (1 / (1 + np.exp(-arr)))
         
         
